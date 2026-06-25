@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 import { dashboardStats, todayTasks, aiRecommendations } from '../data/mockData';
+import {
+  ClipboardList, BarChart3, Clock, Target, Pin, Brain,
+  Sparkles, Zap, Calendar, MessageSquare, AlertTriangle, CheckCircle, BookOpen
+} from 'lucide-react';
 
 // Animated counter
 function Counter({ target, suffix = '', duration = 1500 }) {
@@ -46,7 +51,7 @@ const statCards = [
   {
     key: 'upcomingDeadlines',
     label: 'Upcoming Deadlines',
-    icon: '📋',
+    icon: ClipboardList,
     suffix: '',
     color: '#8b5cf6',
     gradient: 'linear-gradient(135deg, #8b5cf6, #a855f7)',
@@ -57,7 +62,7 @@ const statCards = [
   {
     key: 'attendance',
     label: 'Avg. Attendance',
-    icon: '📊',
+    icon: BarChart3,
     suffix: '%',
     color: '#3b82f6',
     gradient: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
@@ -68,7 +73,7 @@ const statCards = [
   {
     key: 'studyHoursToday',
     label: "Today's Study Hours",
-    icon: '⏱️',
+    icon: Clock,
     suffix: 'h',
     color: '#10b981',
     gradient: 'linear-gradient(135deg, #10b981, #34d399)',
@@ -79,7 +84,7 @@ const statCards = [
   {
     key: 'aiProductivityScore',
     label: 'AI Productivity Score',
-    icon: '🎯',
+    icon: Target,
     suffix: '',
     color: '#f59e0b',
     gradient: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
@@ -91,7 +96,12 @@ const statCards = [
 
 export default function Dashboard() {
   const { deadlines, setActiveView } = useApp();
+  const { user } = useAuth();
   const [tasks, setTasks] = useState(todayTasks);
+
+  const firstName = (user?.name || user?.email?.split('@')[0] || 'Student').split(' ')[0];
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
   const toggleTask = (id) => {
     setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t));
@@ -104,7 +114,7 @@ export default function Dashboard() {
       {/* Page header */}
       <div className="page-header">
         <h1 className="page-title">
-          Good morning, <span className="gradient-text">Aryan</span> 👋
+          {greeting}, <span className="gradient-text">{firstName}</span>
         </h1>
         <p className="page-subtitle">Here's your academic overview for today · {new Date().toLocaleDateString('en-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}</p>
       </div>
@@ -114,8 +124,8 @@ export default function Dashboard() {
         {statCards.map(card => (
           <div key={card.key} className={`card stat-card ${card.class} animate-fade-in`} style={{ padding: 24 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-              <div className="stat-icon" style={{ background: `${card.color}18` }}>
-                {card.icon}
+              <div className="stat-icon" style={{ background: `${card.color}18`, color: card.color }}>
+                <card.icon size={20} />
               </div>
               <CircularGauge
                 value={dashboardStats[card.key]}
@@ -146,7 +156,9 @@ export default function Dashboard() {
         <div className="card" style={{ padding: 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
             <div>
-              <div className="section-title">📌 Today's Tasks</div>
+              <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Pin size={15} style={{ color: 'var(--blue-500)' }} /> Today's Tasks
+              </div>
               <div className="section-subtitle">{tasks.filter(t => t.done).length}/{tasks.length} completed</div>
             </div>
             <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--blue-400)', cursor: 'pointer' }}>+ Add task</div>
@@ -201,7 +213,9 @@ export default function Dashboard() {
         <div className="card" style={{ padding: 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
             <div>
-              <div className="section-title">⏰ Upcoming Deadlines</div>
+              <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Clock size={15} style={{ color: 'var(--purple-400)' }} /> Upcoming Deadlines
+              </div>
               <div className="section-subtitle">Next 10 days</div>
             </div>
             <button className="btn btn-primary btn-sm" onClick={() => setActiveView('deadlines')}>
@@ -250,61 +264,81 @@ export default function Dashboard() {
             <div style={{
               width: 36, height: 36, borderRadius: 10,
               background: 'linear-gradient(135deg, #8b5cf6, #a855f7)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18,
-            }}>🤖</div>
+              display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white',
+            }}>
+              <Brain size={18} />
+            </div>
             <div>
               <div className="section-title">AI Recommendations</div>
               <div style={{ fontSize: 11, color: 'var(--purple-400)', fontWeight: 600 }}>● Updated 5 mins ago</div>
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {aiRecommendations.slice(0, 4).map(rec => (
-              <div key={rec.id} style={{
-                display: 'flex', gap: 12, padding: '12px 14px',
-                borderRadius: 10, background: 'rgba(168,85,247,0.06)',
-                border: '1px solid rgba(168,85,247,0.15)',
-              }}>
-                <span style={{ fontSize: 18, flexShrink: 0 }}>{rec.icon}</span>
-                <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{rec.text}</p>
-              </div>
-            ))}
+            {aiRecommendations.slice(0, 4).map(rec => {
+              const REC_ICONS = {
+                zap:      Zap,
+                book:     BookOpen,
+                alert:    AlertTriangle,
+                target:   Target,
+                calendar: Calendar,
+                check:    CheckCircle,
+              };
+              const RecIcon = REC_ICONS[rec.icon] || Sparkles;
+              return (
+                <div key={rec.id} style={{
+                  display: 'flex', gap: 12, padding: '12px 14px',
+                  borderRadius: 10, background: 'rgba(168,85,247,0.06)',
+                  border: '1px solid rgba(168,85,247,0.15)',
+                  alignItems: 'flex-start',
+                }}>
+                  <RecIcon size={16} style={{ color: '#c084fc', marginTop: 2, flexShrink: 0 }} />
+                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{rec.text}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
 
         {/* Automation Status */}
         <div className="card" style={{ padding: 24 }}>
-          <div className="section-title" style={{ marginBottom: 6 }}>⚡ Automation Status</div>
+          <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+            <Zap size={15} style={{ color: '#fbbf24' }} /> Automation Status
+          </div>
           <div className="section-subtitle">Connected integrations</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 8 }}>
             {[
-              { name: 'Google Calendar', icon: '📅', status: 'Connected', statusColor: '#22c55e', desc: '5 events synced today' },
-              { name: 'WhatsApp Bot', icon: '💬', status: 'Active', statusColor: '#22c55e', desc: '3 reminders scheduled' },
-              { name: 'AI Study Planner', icon: '🤖', status: 'Running', statusColor: '#3b82f6', desc: 'Processing 2 new deadlines' },
-              { name: 'Attendance Monitor', icon: '📊', status: 'Monitoring', statusColor: '#f59e0b', desc: '1 critical alert pending' },
-            ].map(item => (
-              <div key={item.name} style={{
-                display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px',
-                borderRadius: 10, background: 'var(--bg-card2)', border: '1px solid var(--border)',
-              }}>
-                <div style={{
-                  width: 38, height: 38, borderRadius: 10,
-                  background: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18,
+              { name: 'Google Calendar', icon: Calendar, status: 'Connected', statusColor: '#22c55e', desc: '5 events synced today' },
+              { name: 'WhatsApp Bot', icon: MessageSquare, status: 'Active', statusColor: '#22c55e', desc: '3 reminders scheduled' },
+              { name: 'AI Study Planner', icon: Brain, status: 'Running', statusColor: '#3b82f6', desc: 'Processing 2 new deadlines' },
+              { name: 'Attendance Monitor', icon: BarChart3, status: 'Monitoring', statusColor: '#f59e0b', desc: '1 critical alert pending' },
+            ].map(item => {
+              const Icon = item.icon;
+              return (
+                <div key={item.name} style={{
+                  display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px',
+                  borderRadius: 10, background: 'var(--bg-card2)', border: '1px solid var(--border)',
                 }}>
-                  {item.icon}
+                  <div style={{
+                    width: 38, height: 38, borderRadius: 10,
+                    background: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: 'var(--text-secondary)', flexShrink: 0,
+                  }}>
+                    <Icon size={17} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>{item.name}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{item.desc}</div>
+                  </div>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    fontSize: 11, fontWeight: 700, color: item.statusColor,
+                  }}>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: item.statusColor, animation: 'pulse-slow 1.5s ease-in-out infinite' }} />
+                    {item.status}
+                  </div>
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600 }}>{item.name}</div>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{item.desc}</div>
-                </div>
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 6,
-                  fontSize: 11, fontWeight: 700, color: item.statusColor,
-                }}>
-                  <div style={{ width: 6, height: 6, borderRadius: '50%', background: item.statusColor, animation: 'pulse-slow 1.5s ease-in-out infinite' }} />
-                  {item.status}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

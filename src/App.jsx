@@ -35,7 +35,7 @@ function AppShell() {
   return (
     <div
       className="app-layout"
-      style={{ gridTemplateColumns: sidebarOpen ? '260px 1fr' : '72px 1fr' }}
+      style={{ gridTemplateColumns: sidebarOpen ? '260px 1fr' : '72px 1fr', position: 'relative' }}
     >
       <Sidebar />
       <Navbar />

@@ -1,5 +1,10 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import {
+  Sparkles, Brain, CheckCircle2, Save, Edit2, CheckSquare, Trash2,
+  ClipboardList, Calendar, MessageSquare, Zap, Clock, Pin, BookOpen,
+  ChevronUp, ChevronDown, Plus, X, AlertTriangle, AlertCircle
+} from 'lucide-react';
 
 const PRIORITIES = ['low', 'medium', 'high', 'critical'];
 const DIFFICULTIES = ['easy', 'medium', 'hard'];
@@ -72,24 +77,33 @@ function DeadlineForm({ onClose }) {
 
   return (
     <div style={{
-      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)',
-      backdropFilter: 'blur(8px)', zIndex: 200,
+      position: 'fixed', inset: 0,
+      background: 'rgba(4, 3, 8, 0.6)',
+      backdropFilter: 'blur(28px)',
+      WebkitBackdropFilter: 'blur(28px)',
+      zIndex: 200,
       display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24,
     }}>
       <div className="card animate-slide-in" style={{
         width: '100%', maxWidth: 680, maxHeight: '90vh',
         overflowY: 'auto', padding: 32,
+        background: 'rgba(10, 12, 22, 0.5)',
+        backdropFilter: 'blur(56px) saturate(220%) brightness(1.08)',
+        WebkitBackdropFilter: 'blur(56px) saturate(220%) brightness(1.08)',
+        border: '1px solid rgba(255,255,255,0.11)',
+        borderRadius: 28,
+        boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.16), 0 32px 80px rgba(0,0,0,0.65)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
           <div>
-            <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 4 }}>
-              ✨ Add New Deadline
+            <h2 style={{ fontSize: 22, fontWeight: 800, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Sparkles size={20} style={{ color: 'var(--brand-pink)' }} /> Add New Deadline
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>
               AI will generate an optimized study plan
             </p>
           </div>
-          <button className="btn btn-ghost btn-icon" onClick={onClose}>✕</button>
+          <button className="btn btn-ghost btn-icon" onClick={onClose}><X size={15} /></button>
         </div>
 
         <div className="grid-2">
@@ -143,26 +157,28 @@ function DeadlineForm({ onClose }) {
             className="btn btn-primary"
             onClick={handleGenerate}
             disabled={!form.title || !form.deadline || generating}
-            style={{ flex: 1 }}
+            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
           >
             {generating ? (
               <><span style={{ animation: 'spin 1s linear infinite', display:'inline-block' }}>⟳</span> Generating…</>
-            ) : '🤖 Generate AI Study Plan'}
+            ) : <><Brain size={15} /> Generate AI Study Plan</>}
           </button>
           <button
             className="btn btn-success"
             onClick={handleSave}
             disabled={!form.title || !form.deadline || saved}
-            style={{ flex: 1 }}
+            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
           >
-            {saved ? '✅ Saved!' : '💾 Save Deadline'}
+            {saved ? <><CheckCircle2 size={15} /> Saved!</> : <><Save size={15} /> Save Deadline</>}
           </button>
         </div>
 
         {/* AI Plan Preview */}
         {generating && (
           <div style={{ marginTop: 24 }}>
-            <div className="section-title" style={{ marginBottom: 12 }}>🤖 AI is analyzing your deadline…</div>
+            <div className="section-title" style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Brain size={15} style={{ animation: 'pulse-slow 2s infinite' }} /> AI is analyzing your deadline…
+            </div>
             {[1,2,3,4].map(i => (
               <div key={i} className="skeleton" style={{ height: 52, marginBottom: 8, borderRadius: 12 }} />
             ))}
@@ -175,8 +191,10 @@ function DeadlineForm({ onClose }) {
               <div style={{
                 width: 32, height: 32, borderRadius: 10,
                 background: 'linear-gradient(135deg, #8b5cf6, #a855f7)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16,
-              }}>🤖</div>
+                display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white',
+              }}>
+                <Brain size={16} />
+              </div>
               <div>
                 <div className="section-title" style={{ marginBottom: 0 }}>AI Study Plan Generated</div>
                 <div style={{ fontSize: 11, color: 'var(--purple-400)', fontWeight: 600 }}>Optimized for your schedule</div>
@@ -230,21 +248,27 @@ function DeadlineForm({ onClose }) {
 
             {/* Automation preview */}
             <div style={{ marginTop: 20, padding: '16px 20px', borderRadius: 12, background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.2)' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--emerald-400)', marginBottom: 12 }}>⚡ Automations Scheduled</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--emerald-400)', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Zap size={15} style={{ color: '#fbbf24' }} /> Automations Scheduled
+              </div>
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                 {[
-                  { icon: '📅', text: 'Google Calendar event created' },
-                  { icon: '💬', text: 'WhatsApp reminder (24h before)' },
-                  { icon: '💬', text: 'WhatsApp reminder (1h before)' },
-                ].map((a, i) => (
-                  <div key={i} style={{
-                    display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px',
-                    background: 'var(--bg-card2)', borderRadius: 8, border: '1px solid var(--border)',
-                    fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)',
-                  }}>
-                    <span>{a.icon}</span>{a.text}
-                  </div>
-                ))}
+                  { icon: Calendar, text: 'Google Calendar event created', color: 'var(--blue-400)' },
+                  { icon: MessageSquare, text: 'WhatsApp reminder (24h before)', color: 'var(--emerald-400)' },
+                  { icon: MessageSquare, text: 'WhatsApp reminder (1h before)', color: 'var(--emerald-400)' },
+                ].map((a, i) => {
+                  const Icon = a.icon;
+                  return (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px',
+                      background: 'var(--bg-card2)', borderRadius: 8, border: '1px solid var(--border)',
+                      fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)',
+                    }}>
+                      <Icon size={13} style={{ color: a.color }} />
+                      <span>{a.text}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -416,16 +440,22 @@ function DeadlineCard({ d, onDelete }) {
 
       {/* Actions */}
       <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
-        <button className="btn btn-ghost btn-xs" style={{ flex: 1 }}>✏️ Edit</button>
+        <button className="btn btn-ghost btn-xs" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+          <Edit2 size={12} /> Edit
+        </button>
         <button
           className="btn btn-ghost btn-xs"
-          style={{ flex: 1 }}
+          style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}
           onClick={() => updateDeadlineCompletion(d.id, Math.min(100, d.completionPercent + 10))}
         >
-          ✅ Progress
+          <CheckSquare size={12} /> Progress
         </button>
-        <button className="btn btn-ghost btn-xs" onClick={() => onDelete(d.id)} style={{ color: 'var(--rose-400)' }}>
-          🗑️ Delete
+        <button
+          className="btn btn-ghost btn-xs"
+          onClick={() => onDelete(d.id)}
+          style={{ color: 'var(--rose-400)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}
+        >
+          <Trash2 size={12} /> Delete
         </button>
       </div>
     </div>
@@ -446,13 +476,16 @@ export default function Deadlines() {
 
   return (
     <div className="animate-fade-in">
-      <div className="page-header" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div>
-          <h1 className="page-title">📋 Smart Deadline Manager</h1>
-          <p className="page-subtitle">AI-powered study planning for all your assignments & exams</p>
+      <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <ClipboardList size={26} style={{ color: 'var(--brand-purple)' }} />
+          <div>
+            <h1 className="page-title">Smart Deadline Manager</h1>
+            <p className="page-subtitle">AI-powered study planning for all your assignments & exams</p>
+          </div>
         </div>
-        <button className="btn btn-primary" onClick={() => setShowForm(true)}>
-          + Add Deadline
+        <button className="btn btn-primary" onClick={() => setShowForm(true)} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Plus size={15} /> Add Deadline
         </button>
       </div>
 
@@ -469,7 +502,7 @@ export default function Deadlines() {
           {filtered.length === 0 ? (
             <div className="card">
               <div className="empty-state">
-                <div className="empty-state-icon">📋</div>
+                <ClipboardList size={48} style={{ opacity: 0.5, marginBottom: 16 }} />
                 <div className="empty-state-title">No deadlines found</div>
                 <div className="empty-state-text">Add your first deadline and let AI build your study plan</div>
               </div>
@@ -491,7 +524,10 @@ export default function Deadlines() {
               padding: '14px 20px',
               borderBottom: '1px solid var(--border)',
               fontWeight: 700, fontSize: 14,
-            }}>📅 Calendar Preview</div>
+              display: 'flex', alignItems: 'center', gap: 6,
+            }}>
+              <Calendar size={15} style={{ color: 'var(--blue-500)' }} /> Calendar Preview
+            </div>
             <MiniCalendar events={[
               { date: '2026-06-27', color: '#ef4444' },
               { date: '2026-06-30', color: '#8b5cf6' },
@@ -505,54 +541,67 @@ export default function Deadlines() {
 
           {/* Automation Status */}
           <div className="card" style={{ padding: 20 }}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 16 }}>⚡ Automation Status</div>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Zap size={15} style={{ color: '#fbbf24' }} /> Automation Status
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[
-                { icon: '📅', label: 'Google Calendar', status: 'Connected', color: '#22c55e' },
-                { icon: '💬', label: 'WhatsApp Reminder', status: '24h Before', color: '#22c55e' },
-                { icon: '💬', label: 'WhatsApp Reminder', status: '1h Before', color: '#22c55e' },
-                { icon: '🤖', label: 'AI Planner', status: 'Active', color: '#3b82f6' },
-              ].map((item, i) => (
-                <div key={i} style={{
-                  display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px',
-                  borderRadius: 10, background: 'var(--bg-card2)', border: '1px solid var(--border)',
-                }}>
-                  <span style={{ fontSize: 18 }}>{item.icon}</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600 }}>{item.label}</div>
-                  </div>
-                  <div style={{
-                    fontSize: 10, fontWeight: 700, color: item.color,
-                    display: 'flex', alignItems: 'center', gap: 4,
+                { icon: Calendar, label: 'Google Calendar', status: 'Connected', color: '#22c55e' },
+                { icon: MessageSquare, label: 'WhatsApp Reminder', status: '24h Before', color: '#22c55e' },
+                { icon: MessageSquare, label: 'WhatsApp Reminder', status: '1h Before', color: '#22c55e' },
+                { icon: Brain, label: 'AI Planner', status: 'Active', color: '#3b82f6' },
+              ].map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <div key={i} style={{
+                    display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px',
+                    borderRadius: 10, background: 'var(--bg-card2)', border: '1px solid var(--border)',
                   }}>
-                    <div style={{ width: 5, height: 5, borderRadius: '50%', background: item.color, animation: 'pulse-slow 1.5s ease-in-out infinite' }} />
-                    {item.status}
+                    <Icon size={17} style={{ color: 'var(--text-secondary)' }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 12, fontWeight: 600 }}>{item.label}</div>
+                    </div>
+                    <div style={{
+                      fontSize: 10, fontWeight: 700, color: item.color,
+                      display: 'flex', alignItems: 'center', gap: 4,
+                    }}>
+                      <div style={{ width: 5, height: 5, borderRadius: '50%', background: item.color, animation: 'pulse-slow 1.5s ease-in-out infinite' }} />
+                      {item.status}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
           {/* Timeline */}
           <div className="card" style={{ padding: 20 }}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 16 }}>🗓️ Deadline Timeline</div>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Clock size={15} style={{ color: '#8b5cf6' }} /> Deadline Timeline
+            </div>
             <div className="timeline">
               {[
-                { label: 'Deadline Created', icon: '✅', color: '#22c55e' },
-                { label: 'AI Plan Generated', icon: '🤖', color: '#8b5cf6' },
-                { label: 'Calendar Event Created', icon: '📅', color: '#3b82f6' },
-                { label: 'WhatsApp (24h before)', icon: '💬', color: '#f59e0b' },
-                { label: 'WhatsApp (1h before)', icon: '💬', color: '#f59e0b' },
-              ].map((item, i) => (
-                <div key={i} className="timeline-item" style={{ paddingBottom: 16 }}>
-                  <div className="timeline-dot" style={{ background: item.color, width: 20, height: 20, left: -24, fontSize: 9, color: 'white' }}>
-                    {item.icon}
+                { label: 'Deadline Created', icon: CheckCircle2, color: '#22c55e' },
+                { label: 'AI Plan Generated', icon: Brain, color: '#8b5cf6' },
+                { label: 'Calendar Event Created', icon: Calendar, color: '#3b82f6' },
+                { label: 'WhatsApp (24h before)', icon: MessageSquare, color: '#f59e0b' },
+                { label: 'WhatsApp (1h before)', icon: MessageSquare, color: '#f59e0b' },
+              ].map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <div key={i} className="timeline-item" style={{ paddingBottom: 16 }}>
+                    <div className="timeline-dot" style={{
+                      background: item.color, width: 20, height: 20, left: -24,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white',
+                    }}>
+                      <Icon size={10} />
+                    </div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)', paddingTop: 1 }}>
+                      {item.label}
+                    </div>
                   </div>
-                  <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)', paddingTop: 1 }}>
-                    {item.label}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

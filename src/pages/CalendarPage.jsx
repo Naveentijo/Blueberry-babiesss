@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { calendarEvents, deadlines } from '../data/mockData';
+import { Calendar as CalendarIcon, Clock, Pin, ChevronLeft, ChevronRight } from 'lucide-react';
 
 function MiniCalendar() {
   const today = new Date();
@@ -27,11 +28,11 @@ function MiniCalendar() {
     <div>
       {/* Month nav */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-        <button className="btn btn-ghost btn-icon" onClick={prevMonth}>←</button>
+        <button className="btn btn-ghost btn-icon" onClick={prevMonth}><ChevronLeft size={16} /></button>
         <div style={{ fontWeight: 700, fontSize: 16 }}>
           {viewDate.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}
         </div>
-        <button className="btn btn-ghost btn-icon" onClick={nextMonth}>→</button>
+        <button className="btn btn-ghost btn-icon" onClick={nextMonth}><ChevronRight size={16} /></button>
       </div>
 
       {/* Day headers */}
@@ -84,9 +85,12 @@ export default function Calendar() {
 
   return (
     <div className="animate-fade-in">
-      <div className="page-header">
-        <h1 className="page-title">📅 Academic Calendar</h1>
-        <p className="page-subtitle">All deadlines, study sessions, and exams in one place</p>
+      <div className="page-header" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <CalendarIcon size={28} style={{ color: 'var(--brand-blue)' }} />
+        <div>
+          <h1 className="page-title">Academic Calendar</h1>
+          <p className="page-subtitle">All deadlines, study sessions, and exams in one place</p>
+        </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24 }}>
@@ -114,7 +118,9 @@ export default function Calendar() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {/* Upcoming events */}
           <div className="card" style={{ padding: 24 }}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 16 }}>⏰ Upcoming Events</div>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Clock size={15} style={{ color: 'var(--brand-purple)' }} /> Upcoming Events
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {upcoming.map(d => (
                 <div key={d.id} style={{
@@ -142,7 +148,9 @@ export default function Calendar() {
 
           {/* Today's schedule */}
           <div className="card" style={{ padding: 24 }}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 16 }}>📌 Today's Schedule</div>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Pin size={15} style={{ color: 'var(--brand-pink)' }} /> Today's Schedule
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
                 { time: '09:00', event: 'OS Lecture', type: 'lecture', color: '#3b82f6' },

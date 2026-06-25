@@ -2,6 +2,10 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import {
+  GraduationCap, BookOpen, Smartphone, Zap, CheckCircle2,
+  Calendar, MessageSquare, Brain, Lock, X
+} from 'lucide-react';
 import '../styles/auth.css';
 
 // ─── Shared Input ──────────────────────────────────────────────────────────
@@ -24,11 +28,11 @@ function OInput({ label, type = 'text', placeholder, value, onChange, children, 
 
 // ─── Stepper ───────────────────────────────────────────────────────────────
 const STEPS = [
-  { label: 'Academic', icon: '🎓' },
-  { label: 'Subjects', icon: '📚' },
-  { label: 'Contact',  icon: '📱' },
-  { label: 'Setup',    icon: '⚡' },
-  { label: 'Done',     icon: '✅' },
+  { label: 'Academic' },
+  { label: 'Subjects' },
+  { label: 'Contact' },
+  { label: 'Setup' },
+  { label: 'Done' },
 ];
 
 function Stepper({ current }) {
@@ -70,7 +74,9 @@ function Step1({ data, setData, onNext }) {
   return (
     <div>
       <div className="onboard-step-header">
-        <div className="onboard-step-icon">🎓</div>
+        <div className="onboard-step-icon" style={{ background: 'rgba(79,124,255,0.12)', color: '#4F7CFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <GraduationCap size={20} />
+        </div>
         <h2>Academic Information</h2>
         <p>Tell us about your college and programme so we can tailor CampusFlow for you.</p>
       </div>
@@ -123,7 +129,9 @@ function Step2({ data, setData, onNext, onBack }) {
   return (
     <div>
       <div className="onboard-step-header">
-        <div className="onboard-step-icon">📚</div>
+        <div className="onboard-step-icon" style={{ background: 'rgba(139,92,246,0.12)', color: '#8B5CF6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <BookOpen size={20} />
+        </div>
         <h2>Your Subjects</h2>
         <p>Select the subjects you're enrolled in this semester. AI will track deadlines and attendance for each.</p>
       </div>
@@ -175,7 +183,9 @@ function Step3({ data, setData, onNext, onBack }) {
   return (
     <div>
       <div className="onboard-step-header">
-        <div className="onboard-step-icon">📱</div>
+        <div className="onboard-step-icon" style={{ background: 'rgba(192,132,252,0.12)', color: '#C084FC', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Smartphone size={20} />
+        </div>
         <h2>Contact Information</h2>
         <p>Used for WhatsApp reminders and important notifications about your deadlines and attendance.</p>
       </div>
@@ -183,7 +193,7 @@ function Step3({ data, setData, onNext, onBack }) {
       <OInput label="Country Code">
         <div className="phone-group">
           <select className="auth-input country-code-select" value={data.countryCode || '+91'} onChange={set('countryCode')}>
-            {['+91 🇮🇳', '+1 🇺🇸', '+44 🇬🇧', '+61 🇦🇺', '+65 🇸🇬', '+971 🇦🇪'].map(c => (
+            {['+91 (IN)', '+1 (US)', '+44 (UK)', '+61 (AU)', '+65 (SG)', '+971 (AE)'].map(c => (
               <option key={c} value={c.split(' ')[0]}>{c}</option>
             ))}
           </select>
@@ -198,8 +208,10 @@ function Step3({ data, setData, onNext, onBack }) {
         padding: '14px 16px', borderRadius: 12,
         background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.18)',
         fontSize: 12, color: '#64748b', marginBottom: 8, lineHeight: 1.6,
+        display: 'flex', alignItems: 'center', gap: 6
       }}>
-        🔒 Your contact info is used only for academic reminders. We never share it.
+        <Lock size={13} style={{ color: '#22c55e', flexShrink: 0 }} />
+        <span>Your contact info is used only for academic reminders. We never share it.</span>
       </div>
 
       <div className="onboard-nav">
@@ -242,14 +254,18 @@ function Step4({ data, setData, onNext, onBack }) {
   return (
     <div>
       <div className="onboard-step-header">
-        <div className="onboard-step-icon">⚡</div>
+        <div className="onboard-step-icon" style={{ background: 'rgba(251,191,36,0.12)', color: '#fbbf24', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Zap size={20} />
+        </div>
         <h2>Automation Setup</h2>
         <p>Connect your tools to enable smart reminders and automatic calendar events.</p>
       </div>
 
       {/* Google Calendar Card */}
       <div className="connect-card">
-        <div className="connect-card-icon" style={{ background: 'rgba(59,130,246,0.12)' }}>📅</div>
+        <div className="connect-card-icon" style={{ background: 'rgba(59,130,246,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
+          <Calendar size={20} />
+        </div>
         <div className="connect-card-info">
           <div className="connect-card-title">Google Calendar</div>
           <div className="connect-card-desc">
@@ -262,13 +278,15 @@ function Step4({ data, setData, onNext, onBack }) {
           disabled={calConnected || calLoading}
           type="button"
         >
-          {calLoading ? '⏳' : calConnected ? '✓ Connected' : 'Connect'}
+          {calLoading ? <span className="cf-spinner" style={{ width: 14, height: 14 }} /> : calConnected ? '✓ Connected' : 'Connect'}
         </button>
       </div>
 
       {/* WhatsApp Card */}
       <div className="connect-card">
-        <div className="connect-card-icon" style={{ background: 'rgba(34,197,94,0.12)' }}>💬</div>
+        <div className="connect-card-icon" style={{ background: 'rgba(34,197,94,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#22c55e' }}>
+          <MessageSquare size={20} />
+        </div>
         <div className="connect-card-info">
           <div className="connect-card-title">WhatsApp Automation</div>
           <div className="connect-card-desc">
@@ -281,13 +299,15 @@ function Step4({ data, setData, onNext, onBack }) {
           disabled={waVerified || waLoading}
           type="button"
         >
-          {waLoading ? '⏳' : waVerified ? '✓ Verified' : 'Verify'}
+          {waLoading ? <span className="cf-spinner" style={{ width: 14, height: 14 }} /> : waVerified ? '✓ Verified' : 'Verify'}
         </button>
       </div>
 
       {/* AI Planner */}
       <div className="connect-card" style={{ borderColor: 'rgba(168,85,247,0.2)', background: 'rgba(168,85,247,0.04)' }}>
-        <div className="connect-card-icon" style={{ background: 'rgba(168,85,247,0.12)' }}>🤖</div>
+        <div className="connect-card-icon" style={{ background: 'rgba(168,85,247,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b5cf6' }}>
+          <Brain size={20} />
+        </div>
         <div className="connect-card-info">
           <div className="connect-card-title">AI Study Planner</div>
           <div className="connect-card-desc">✓ Active — will generate plans for all your deadlines</div>
@@ -320,7 +340,9 @@ function Step5({ data, onFinish }) {
     >
       <div className="success-ring-wrap">
         <div className="success-ring" />
-        <div className="success-icon-circle">🎓</div>
+        <div className="success-icon-circle" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <GraduationCap size={36} color="white" />
+        </div>
       </div>
 
       <h2>Your CampusFlow workspace is ready!</h2>
@@ -333,31 +355,34 @@ function Step5({ data, onFinish }) {
       {/* Summary chips */}
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 32 }}>
         {[
-          { icon: '📚', label: `${data.subjects?.length || 0} Subjects` },
-          { icon: '🤖', label: 'AI Planner Active' },
-          { icon: '📅', label: 'Calendar Ready' },
-          { icon: '💬', label: 'WhatsApp Setup' },
-        ].map((item, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 + i * 0.1 }}
-            style={{
-              padding: '8px 16px', borderRadius: 99,
-              background: 'rgba(99,102,241,0.1)',
-              border: '1px solid rgba(99,102,241,0.25)',
-              fontSize: 13, fontWeight: 600, color: '#a5b4fc',
-              display: 'flex', alignItems: 'center', gap: 6,
-            }}
-          >
-            {item.icon} {item.label}
-          </motion.div>
-        ))}
+          { icon: BookOpen, label: `${data.subjects?.length || 0} Subjects`, color: '#8b5cf6' },
+          { icon: Brain, label: 'AI Planner Active', color: '#a855f7' },
+          { icon: Calendar, label: 'Calendar Ready', color: '#3b82f6' },
+          { icon: MessageSquare, label: 'WhatsApp Setup', color: '#22c55e' },
+        ].map((item, i) => {
+          const Icon = item.icon;
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + i * 0.1 }}
+              style={{
+                padding: '8px 16px', borderRadius: 99,
+                background: 'rgba(99,102,241,0.1)',
+                border: '1px solid rgba(99,102,241,0.25)',
+                fontSize: 13, fontWeight: 600, color: '#a5b4fc',
+                display: 'flex', alignItems: 'center', gap: 6,
+              }}
+            >
+              <Icon size={14} style={{ color: item.color }} /> {item.label}
+            </motion.div>
+          );
+        })}
       </div>
 
       <button className="auth-btn-primary" style={{ maxWidth: 280, margin: '0 auto' }} onClick={onFinish} type="button">
-        🚀 Go to Dashboard
+        Go to Dashboard
       </button>
     </motion.div>
   );
@@ -399,12 +424,6 @@ export default function Onboarding() {
 
   return (
     <div className="onboard-root">
-      {/* BG glow */}
-      <div style={{
-        position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0,
-        background: 'radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.07) 0%, transparent 60%)',
-      }} />
-
       <motion.div
         className="onboard-card"
         initial={{ opacity: 0, y: 32, scale: 0.97 }}
@@ -413,7 +432,9 @@ export default function Onboarding() {
       >
         {/* Top logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-          <div className="auth-logo-icon" style={{ width: 30, height: 30, fontSize: 16, borderRadius: 8 }}>🎓</div>
+          <div className="auth-logo-icon" style={{ width: 30, height: 30, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <GraduationCap size={16} color="white" />
+          </div>
           <span className="auth-logo-text" style={{ fontSize: 14 }}>Campus<span>Flow</span></span>
           <span style={{
             marginLeft: 'auto', fontSize: 11, fontWeight: 700, color: '#475569',

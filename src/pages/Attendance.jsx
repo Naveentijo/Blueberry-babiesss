@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { attendanceData as mockAttendance } from '../data/mockData';
+import {
+  BarChart3, Edit3, Search, MessageSquare, Brain, Bell,
+  CheckCircle2, AlertTriangle, Lightbulb, TrendingUp
+} from 'lucide-react';
 
 // Circular Gauge
 function CircularGauge({ value, max = 100, color, size = 120, stroke = 12, label }) {
@@ -96,7 +100,9 @@ function AttendanceForm({ onAnalyze }) {
   return (
     <div className="card" style={{ padding: 28 }}>
       <div style={{ marginBottom: 20 }}>
-        <div className="section-title">📝 Attendance Input</div>
+        <div className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Edit3 size={15} style={{ color: 'var(--blue-400)' }} /> Attendance Input
+        </div>
         <div className="section-subtitle">Enter your attendance details for AI analysis</div>
       </div>
       <div className="grid-2" style={{ marginBottom: 16 }}>
@@ -123,9 +129,9 @@ function AttendanceForm({ onAnalyze }) {
         className="btn btn-primary"
         onClick={handleSubmit}
         disabled={!form.subject || !form.conducted || !form.attended}
-        style={{ width: '100%', justifyContent: 'center' }}
+        style={{ width: '100%', justifyContent: 'center', display: 'flex', alignItems: 'center', gap: 6 }}
       >
-        🔍 Analyze Attendance
+        <Search size={14} /> Analyze Attendance
       </button>
     </div>
   );
@@ -147,8 +153,8 @@ function SubjectCard({ s }) {
           <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>
             {s.classesAttended}/{s.classesConducted} classes attended
           </div>
-          <span className={`badge badge-${s.risk}`}>
-            {s.risk === 'critical' ? '🔴' : s.risk === 'warning' ? '🟡' : '🟢'} {riskLabels[s.risk]}
+          <span className={`badge badge-${s.risk}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            <span className="dot" style={{ background: s.color, width: 6, height: 6 }} /> {riskLabels[s.risk]}
           </span>
         </div>
         <div style={{ textAlign: 'right' }}>
@@ -225,35 +231,40 @@ function SubjectCard({ s }) {
 // WhatsApp Automation workflow
 function WhatsAppWorkflow() {
   const steps = [
-    { icon: '📊', label: 'Attendance Updated', color: '#3b82f6' },
-    { icon: '🤖', label: 'AI Risk Analysis', color: '#8b5cf6' },
-    { icon: '💬', label: 'WhatsApp Reminder', color: '#22c55e' },
-    { icon: '🔔', label: 'Dashboard Notification', color: '#f59e0b' },
+    { icon: CheckCircle2, label: 'Attendance Updated', color: '#3b82f6' },
+    { icon: Brain, label: 'AI Risk Analysis', color: '#8b5cf6' },
+    { icon: MessageSquare, label: 'WhatsApp Reminder', color: '#22c55e' },
+    { icon: Bell, label: 'Dashboard Notification', color: '#f59e0b' },
   ];
   return (
     <div className="card" style={{ padding: 24 }}>
-      <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 16 }}>💬 Weekly WhatsApp Automation</div>
+      <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
+        <MessageSquare size={15} style={{ color: '#22c55e' }} /> Weekly WhatsApp Automation
+      </div>
       <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 0 }}>
-        {steps.map((step, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, paddingBottom: i < steps.length - 1 ? 0 : 0 }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <div style={{
-                width: 40, height: 40, borderRadius: 12,
-                background: `${step.color}18`, border: `1.5px solid ${step.color}40`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18,
-                flexShrink: 0,
-              }}>
-                {step.icon}
+        {steps.map((step, i) => {
+          const Icon = step.icon;
+          return (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, paddingBottom: i < steps.length - 1 ? 0 : 0 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{
+                  width: 40, height: 40, borderRadius: 12,
+                  background: `${step.color}18`, border: `1.5px solid ${step.color}40`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: step.color, flexShrink: 0,
+                }}>
+                  <Icon size={18} />
+                </div>
+                {i < steps.length - 1 && (
+                  <div style={{ width: 2, height: 20, background: `linear-gradient(to bottom, ${step.color}, ${steps[i+1].color})`, opacity: 0.4 }} />
+                )}
               </div>
-              {i < steps.length - 1 && (
-                <div style={{ width: 2, height: 20, background: `linear-gradient(to bottom, ${step.color}, ${steps[i+1].color})`, opacity: 0.4 }} />
-              )}
+              <div style={{ padding: '10px 0', fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>
+                {step.label}
+              </div>
             </div>
-            <div style={{ padding: '10px 0', fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>
-              {step.label}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <div style={{
         marginTop: 16, padding: '12px 14px', borderRadius: 10,
@@ -287,28 +298,34 @@ export default function Attendance() {
 
   return (
     <div className="animate-fade-in">
-      <div className="page-header">
-        <h1 className="page-title">📊 Attendance Risk Alerter</h1>
-        <p className="page-subtitle">AI-powered attendance monitoring to prevent eligibility issues</p>
+      <div className="page-header" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <BarChart3 size={28} style={{ color: 'var(--brand-blue)' }} />
+        <div>
+          <h1 className="page-title">Attendance Risk Alerter</h1>
+          <p className="page-subtitle">AI-powered attendance monitoring to prevent eligibility issues</p>
+        </div>
       </div>
 
       {/* Summary row */}
       <div className="grid-3" style={{ marginBottom: 24 }}>
         {[
-          { label: 'Critical', count: critical, color: '#ef4444', icon: '🔴', bg: 'rgba(239,68,68,0.06)' },
-          { label: 'Warning', count: warning, color: '#f59e0b', icon: '🟡', bg: 'rgba(245,158,11,0.06)' },
-          { label: 'Safe', count: safe, color: '#22c55e', icon: '🟢', bg: 'rgba(34,197,94,0.06)' },
-        ].map(s => (
-          <div key={s.label} className="card stat-card" style={{ background: s.bg, padding: 24, borderColor: `${s.color}30` }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ fontSize: 28 }}>{s.icon}</div>
-              <div>
-                <div style={{ fontSize: 32, fontWeight: 800, color: s.color, lineHeight: 1 }}>{s.count}</div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>{s.label} Subjects</div>
+          { label: 'Critical', count: critical, color: '#ef4444', icon: AlertTriangle, bg: 'rgba(239,68,68,0.06)' },
+          { label: 'Warning', count: warning, color: '#f59e0b', icon: AlertTriangle, bg: 'rgba(245,158,11,0.06)' },
+          { label: 'Safe', count: safe, color: '#22c55e', icon: CheckCircle2, bg: 'rgba(34,197,94,0.06)' },
+        ].map(s => {
+          const Icon = s.icon;
+          return (
+            <div key={s.label} className="card stat-card" style={{ background: s.bg, padding: 24, borderColor: `${s.color}30` }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <Icon size={28} style={{ color: s.color }} />
+                <div>
+                  <div style={{ fontSize: 32, fontWeight: 800, color: s.color, lineHeight: 1 }}>{s.count}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>{s.label} Subjects</div>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 24 }}>
@@ -337,8 +354,8 @@ export default function Attendance() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {/* Overall attendance gauge */}
           <div className="card" style={{ padding: 24, textAlign: 'center' }}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 20, textAlign: 'left' }}>
-              📈 Overall Attendance
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 20, textAlign: 'left', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <TrendingUp size={15} style={{ color: '#8b5cf6' }} /> Overall Attendance
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
               <CircularGauge
@@ -372,7 +389,9 @@ export default function Attendance() {
 
           {/* Recovery Tips */}
           <div className="card" style={{ padding: 20 }}>
-            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 14 }}>💡 Recovery Tips</div>
+            <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Lightbulb size={15} style={{ color: '#fbbf24' }} /> Recovery Tips
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
                 'Attend all classes for 2 weeks straight to recover critical subjects',
@@ -383,8 +402,9 @@ export default function Attendance() {
                 <div key={i} style={{
                   display: 'flex', gap: 10, padding: '10px 12px',
                   borderRadius: 10, background: 'var(--bg-card2)', border: '1px solid var(--border)',
+                  alignItems: 'flex-start',
                 }}>
-                  <span style={{ fontSize: 14 }}>{'💡'}</span>
+                  <Lightbulb size={14} style={{ color: '#fbbf24', marginTop: 2, flexShrink: 0 }} />
                   <p style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{tip}</p>
                 </div>
               ))}

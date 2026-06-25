@@ -249,12 +249,12 @@ export const notifications = [
 ];
 
 export const aiRecommendations = [
-  { id: 1, icon: "⚡", text: "You have 2 critical deadlines this week. Prioritize CN Lab Report today.", type: "urgent" },
-  { id: 2, icon: "📚", text: "Spend 2 hours today on DBMS to complete the ER diagram on schedule.", type: "study" },
-  { id: 3, icon: "⚠️", text: "DBMS attendance at 68% — critical! Attend all upcoming classes.", type: "attendance" },
-  { id: 4, icon: "🎯", text: "Your ML Assignment productivity score is 84%. You're on track!", type: "positive" },
-  { id: 5, icon: "📅", text: "Best study window today: 3 PM – 6 PM based on your calendar.", type: "schedule" },
-  { id: 6, icon: "✅", text: "OS exam is 15 days away. Start with Processes & Threads chapter.", type: "exam" },
+  { id: 1, icon: "zap", text: "You have 2 critical deadlines this week. Prioritize CN Lab Report today.", type: "urgent" },
+  { id: 2, icon: "book", text: "Spend 2 hours today on DBMS to complete the ER diagram on schedule.", type: "study" },
+  { id: 3, icon: "alert", text: "DBMS attendance at 68% — critical! Attend all upcoming classes.", type: "attendance" },
+  { id: 4, icon: "target", text: "Your ML Assignment productivity score is 84%. You're on track!", type: "positive" },
+  { id: 5, icon: "calendar", text: "Best study window today: 3 PM – 6 PM based on your calendar.", type: "schedule" },
+  { id: 6, icon: "check", text: "OS exam is 15 days away. Start with Processes & Threads chapter.", type: "exam" },
 ];
 
 export const calendarEvents = [

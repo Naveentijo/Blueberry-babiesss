@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { deadlines as initialDeadlines, attendanceData as initialAttendance, notifications as initialNotifications } from '../data/mockData';
+import { tasksAPI } from '../services/api';
 
 const AppContext = createContext();
 
@@ -24,17 +25,63 @@ export function AppProvider({ children }) {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   }, []);
 
-  const addDeadline = useCallback((deadline) => {
-    setDeadlines(prev => [{ id: Date.now(), ...deadline }, ...prev]);
-    addNotification({ type: 'success', title: 'Deadline Added Successfully', message: `${deadline.title} added for ${deadline.deadline}` });
+  /**
+   * addDeadline — saves to Supabase via the Express backend, then updates
+   * local React state with the response. If the API is unavailable, falls
+   * back to local-only state so the UI never breaks.
+   */
+  const addDeadline = useCallback(async (deadline) => {
+    // Optimistically add to local state immediately for snappy UI
+    const localId = Date.now();
+    const localDeadline = { id: localId, ...deadline };
+    setDeadlines(prev => [localDeadline, ...prev]);
+    addNotification({ type: 'success', title: 'Deadline Added', message: `${deadline.title} added for ${deadline.deadline}` });
+
+    // Attempt to persist to backend
+    try {
+      const user = JSON.parse(localStorage.getItem('cf_user') || 'null');
+      const response = await tasksAPI.create({
+        title: deadline.title,
+        subject: deadline.subject,
+        description: deadline.notes || '',
+        deadline: deadline.deadline,
+        priority: deadline.priority || 'medium',
+        difficulty: deadline.difficulty || 'medium',
+        estimatedHours: deadline.estimatedHours || 4,
+        completionPercent: deadline.completionPercent || 0,
+        studyPlan: deadline.studyPlan || null,
+        aiStats: deadline.aiStats || null,
+        studentEmail: user?.email || null,
+      });
+
+      // Replace local temp entry with the real DB record (has proper UUID)
+      if (response.success && response.task) {
+        setDeadlines(prev =>
+          prev.map(d => d.id === localId ? { ...d, ...response.task } : d)
+        );
+
+        // Notify about automation result
+        if (response.automation) {
+          addNotification({ type: 'calendar', title: 'Calendar Event Created', message: `${deadline.title} synced to Google Calendar` });
+          addNotification({ type: 'whatsapp', title: 'WhatsApp Reminder Scheduled', message: `Reminder set for ${deadline.title}` });
+        }
+      }
+    } catch (err) {
+      // Backend unavailable — local state already has the deadline, so no disruption
+      console.warn('[CampusFlow] Backend unavailable, task saved locally only:', err.message);
+    }
   }, [addNotification]);
 
-  const deleteDeadline = useCallback((id) => {
+  const deleteDeadline = useCallback(async (id) => {
     setDeadlines(prev => prev.filter(d => d.id !== id));
+    // Best-effort delete from backend
+    tasksAPI.delete(id).catch(() => {});
   }, []);
 
-  const updateDeadlineCompletion = useCallback((id, percent) => {
+  const updateDeadlineCompletion = useCallback(async (id, percent) => {
     setDeadlines(prev => prev.map(d => d.id === id ? { ...d, completionPercent: percent } : d));
+    // Best-effort update in backend
+    tasksAPI.update(id, { completionPercent: percent }).catch(() => {});
   }, []);
 
   return (

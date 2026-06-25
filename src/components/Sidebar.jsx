@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   GraduationCap, LayoutDashboard, Clock, BarChart2,
   Calendar, Zap, Settings,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { currentUser } from '../data/mockData';
+import { useAuth } from '../context/AuthContext';
 
 const NAV_ITEMS = [
   { id: 'dashboard',   icon: LayoutDashboard, label: 'Dashboard' },
@@ -17,7 +18,11 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
   const { activeView, setActiveView, sidebarOpen } = useApp();
-  const initials = currentUser.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+  const { user } = useAuth();
+  const [hoveredId, setHoveredId] = useState(null);
+
+  const displayName = user?.name || user?.email?.split('@')[0] || 'Student';
+  const initials = displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
   return (
     <aside className="sidebar" style={{ width: sidebarOpen ? 260 : 72 }}>
@@ -40,28 +45,47 @@ export default function Sidebar() {
 
       {sidebarOpen && <div className="nav-section-label">Navigation</div>}
 
-      <nav className="sidebar-nav">
+      <nav className="sidebar-nav" onMouseLeave={() => setHoveredId(null)}>
         {NAV_ITEMS.map(item => {
           const isActive = activeView === item.id;
+          const isHovered = hoveredId === item.id;
           return (
             <motion.button
               key={item.id}
               className={`nav-item ${isActive ? 'active' : ''}`}
               onClick={() => setActiveView(item.id)}
+              onMouseEnter={() => setHoveredId(item.id)}
               title={!sidebarOpen ? item.label : undefined}
               whileHover={{ x: 2 }}
               whileTap={{ scale: 0.98 }}
               transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+              style={{ position: 'relative' }}
             >
-              <span className="nav-icon" style={{ display: 'flex', alignItems: 'center' }}>
+              {isHovered && (
+                <motion.div
+                  layoutId="hover-pill-sidebar"
+                  className="nav-item-hover-bg"
+                  transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+                />
+              )}
+
+              {isActive && (
+                <motion.div
+                  layoutId="active-pill-sidebar"
+                  className="nav-item-active-bg"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
+              <span className="nav-icon" style={{ display: 'flex', alignItems: 'center', zIndex: 1 }}>
                 <item.icon size={18} />
               </span>
-              {sidebarOpen && <span className="sidebar-label">{item.label}</span>}
+              {sidebarOpen && <span className="sidebar-label" style={{ zIndex: 1 }}>{item.label}</span>}
               {sidebarOpen && item.badge && (
                 <span style={{
                   marginLeft: 'auto', fontSize: 10, fontWeight: 700,
                   padding: '2px 7px', borderRadius: 99,
                   background: 'var(--grad-primary)', color: 'white',
+                  zIndex: 1,
                 }}>
                   {item.badge}
                 </span>
@@ -87,14 +111,14 @@ export default function Sidebar() {
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {currentUser.name}
+                {displayName}
               </div>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{currentUser.semester}</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{user?.semester || user?.branch || user?.email || 'CampusFlow'}</div>
             </div>
           </div>
           <div style={{ marginTop: 10, height: 1, background: 'var(--border)' }} />
           <div style={{ marginTop: 10, fontSize: 11, color: 'var(--text-secondary)' }}>
-            <span style={{ fontWeight: 600 }}>Roll No:</span> {currentUser.rollNo}
+            <span style={{ fontWeight: 600 }}>Roll No:</span> {user?.rollNo || '—'}
           </div>
         </div>
       )}

@@ -6,7 +6,7 @@ import {
   LogOut, User,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { currentUser } from '../data/mockData';
+import { useAuth } from '../context/AuthContext';
 
 const NOTIF_ICONS = {
   success:  CheckCircle,
@@ -25,8 +25,12 @@ export default function Navbar() {
     showAIPanel, setShowAIPanel,
     markAllRead,
   } = useApp();
+  const { user, logout } = useAuth();
   const [search, setSearch] = useState('');
-  const initials = currentUser.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+
+  const displayName = user?.name || user?.email?.split('@')[0] || 'Student';
+  const displayBranch = user?.branch || user?.semester ? `${user?.branch || ''}${user?.branch && user?.semester ? ' · ' : ''}${user?.semester || ''}` : 'CampusFlow';
+  const initials = displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
   return (
     <>
@@ -71,18 +75,26 @@ export default function Navbar() {
             {unreadCount > 0 && <span className="badge-dot">{unreadCount}</span>}
           </button>
 
-          {/* Avatar */}
+          {/* Avatar + Logout */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginLeft: 4 }}>
-            <div className="avatar" title={currentUser.name}>
+            <div className="avatar" title={displayName}>
               {initials}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.2 }}>
-                {currentUser.name.split(' ')[0]}
+                {displayName.split(' ')[0]}
               </span>
-              <span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>{currentUser.branch}</span>
+              <span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>{displayBranch}</span>
             </div>
           </div>
+          <button
+            className="nav-btn"
+            onClick={logout}
+            title="Log out"
+            style={{ marginLeft: 2 }}
+          >
+            <LogOut size={16} />
+          </button>
         </div>
       </header>
 

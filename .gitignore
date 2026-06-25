@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables — NEVER commit real secrets
+.env
+.env.local
+.env.production
+server/.env
+
+# Server dependencies
+server/node_modules/

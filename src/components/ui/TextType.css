@@ -1,0 +1,20 @@
+.text-type {
+  display: inline;
+}
+
+.text-type__content {
+  display: inline;
+}
+
+.text-type__cursor {
+  display: inline;
+  font-weight: 200;
+  margin-left: 1px;
+  color: #8B5CF6;
+  font-size: 0.9em;
+  line-height: 1;
+}
+
+.text-type__cursor--hidden {
+  opacity: 0;
+}
